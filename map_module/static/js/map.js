@@ -11,8 +11,7 @@ var auto2;
 var agency_list = new Map();
 var agency_marker = [];
 var position_marker = [];
-var viewport_ne = [];
-var viewport_sw = [];
+var default_radius=16000;
 
 
 function initMap() {
@@ -54,7 +53,7 @@ function removeMarker(m) {
 const asyncronized = place => new Promise((resolve, reject) => {
     service.nearbySearch({
         location: place.geometry.location,
-        radius: 20000,
+        radius: default_radius,
         type: ['real_estate_agency']
     }, function (results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -104,12 +103,10 @@ function search() {
         let arr_dist = agency_arr.map(function (a) {
             return [a, dist(a.geometry.location, place1.geometry.location) + dist(a.geometry.location, place2.geometry.location)];
         });
-        // console.log(arr_dist);
+
         arr_dist.sort(function (x, y) {
             return x[1] - y[1];
-            // let total_dist1 = dist(x.geometry.location, place1.geometry.location) + dist(x.geometry.location, place2.geometry.location);
-            // let total_dist2 = dist(y.geometry.location, place1.geometry.location) + dist(y.geometry.location, place2.geometry.location);
-            // return total_dist1 - total_dist2;
+
         });
         arr_dist.map(x => createMarker(x[0]));
 
@@ -143,16 +140,6 @@ function dist(x, y) {
     return Math.round(km * 100) * 10;
 }
 
-
-function nearby_search_callback(results, status) {
-
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-        results.map(function (a) {
-            agency_list.set(a.id, a);
-        });
-        // console.log(agency_list.size);
-    }
-}
 
 function createMarker(place) {
     let marker = new google.maps.Marker({
