@@ -11,7 +11,7 @@ var auto2;
 var agency_list = new Map();
 var agency_marker = [];
 var position_marker = [];
-var default_radius=16000;
+var default_radius = 16000;
 
 
 function initMap() {
@@ -26,6 +26,7 @@ function initMap() {
     var button = /** @type {!HTMLInputElement} */(
         document.getElementById('search-button'));
 
+
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(input1);
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(input2);
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(button);
@@ -33,6 +34,7 @@ function initMap() {
 
     auto1 = new google.maps.places.Autocomplete(input1);
     auto2 = new google.maps.places.Autocomplete(input2);
+
 
     auto1.bindTo('bounds', map);
     auto2.bindTo('bounds', map);
@@ -81,6 +83,7 @@ function search() {
 
     let place1 = auto1.getPlace();
     let place2 = auto2.getPlace();
+
     if (!place1.geometry || !place2.geometry) {
         let wrong_place_name = place1.geometry ? place2.name : place1.name;
         window.alert("No details available for input: '" + wrong_place_name + "'");
@@ -90,6 +93,7 @@ function search() {
 
     Promise.all([asyncronized(place1), asyncronized(place2)]).then(function () {
         let agency_arr = Array.from(agency_list.values());
+        console.log(agency_arr.length);
 
         let viewport = agency_arr.map(a => a.geometry.viewport).reduce(function (x, y) {
             x.b.b = Math.min(x.b.b, y.b.b);
@@ -109,21 +113,25 @@ function search() {
 
         });
         arr_dist.map(x => createMarker(x[0]));
-
+        let flag = false;
         let panel = $('#result_panel');
         if (panel.length === 0) {
-            console.log('test');
+            flag = true;
             panel = /** @type {!HTMLInputElement} */$('<div class="panel panel-primary" id="result_panel"><div class="panel-heading"><h3 class="panel-title">Result List</h3></div><div class="panel-body"><ul class="list-group"></ul></div></div>');
         }
+
         let list = panel.find('ul');
-        console.log(panel);
+
         list.empty();
+        console.log(panel[0]);
         arr_dist.map(function (place) {
-            console.log(place[1]);
+
             list.append($('<li class="list-group-item"><strong>' + place[0].name + '</strong>' + '(' + place[1].toString() + 'm)' + '</li>'))
         });
-
-        map.controls[google.maps.ControlPosition.LEFT_CENTER].push(panel[0]);
+        console.log(panel[0]);
+        if (flag) {
+            map.controls[google.maps.ControlPosition.LEFT_CENTER].push(panel[0]);
+        }
 
 
     });

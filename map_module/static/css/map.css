@@ -58,3 +58,24 @@ html, body {
     background-color: #4d90fe;
     color: #fff;
 }
+
+.panel-body {
+    font-size: 10px;
+}
+
+.list-group {
+    margin-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.panel{
+    height: 80%;
+    flex: 1 1 0; /* flex: 1, which you had before, is equivalent but doesn't work */
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+/*.container-fluid {*/
+    /**/
+
+/*}*/
